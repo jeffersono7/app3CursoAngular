@@ -4,6 +4,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Autenticacao } from '../../autenticacao.service';
 
 import { Usuario } from '../usuario.model';
+import { BlockUIService } from '../../block-ui.service';
 
 @Component({
   selector: 'app-cadastro',
@@ -25,7 +26,8 @@ export class CadastroComponent implements OnInit {
   });
 
   constructor(
-    private autenticacao: Autenticacao
+    private autenticacao: Autenticacao,
+    private blockUIService: BlockUIService
     ) { }
 
   ngOnInit() {
@@ -36,6 +38,7 @@ export class CadastroComponent implements OnInit {
   }
 
   public cadastrarUsuario(): void {
+    this.blockUIService.start();
     if (this.formulario.valid) {
       const usuario: Usuario = new Usuario(
         this.formulario.value.email,
@@ -43,8 +46,18 @@ export class CadastroComponent implements OnInit {
         this.formulario.value.nomeUsuario,
         this.formulario.value.senha
       );
-      this.autenticacao.cadastrarUsuario(usuario);
+      this.autenticacao.cadastrarUsuario(usuario)
+        .then((res: any) => {
+          this.blockUIService.stop();
+          this.exibirPainel.emit('login');
+        })
+        .catch(e => {
+          this.blockUIService.stop();
+          alert('Houve um erro! \nTente novamente!');
+        });
     } else {
+      this.blockUIService.stop();
+      alert('Dados inválidos!');
       return;
     }
   }

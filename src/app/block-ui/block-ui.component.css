@@ -1,0 +1,31 @@
+.block-ui {
+    position: fixed;
+    display: block;
+    cursor: wait;
+    z-index: 30000;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.486);
+}
+
+.conteudo {
+    position: absolute;
+    top: 40%;
+    z-index: 31000;
+    margin-left: 45%;
+    color: rgb(255, 130, 28);
+}
+
+.loading {
+    width: 75px;
+    height: 75px;
+    align-content: center;
+    align-items: center;
+}
+
+.msg {
+    align-content: center;
+    align-items: center;
+}
