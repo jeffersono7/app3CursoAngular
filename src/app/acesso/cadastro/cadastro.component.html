@@ -35,11 +35,13 @@
           formControlName="senha"
         >
       </div>
-      <button type="submit" class="btn btn-primary btn-sm btn-block">Cadastre-se</button>
+      <button type="submit" class="btn btn-primary btn-sm btn-block" [disabled]="formulario.invalid">Cadastre-se</button>
     </form>
     <hr />
 
     <p class="small text-center">Ao cadastrar-se, você concorda com nossos <b>Termos</b> e <b>Política de Privacidade</b>.</p>
+    <br>
+    <p class="small text-danger text-center" *ngIf="statusCadastro.status === 'error'">{{ statusCadastro.msg }}</p>
 
   </div>
 </div>

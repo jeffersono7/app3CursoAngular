@@ -23,9 +23,12 @@ export class Autenticacao {
                 firebase.database().ref(`usuario_detalhe/${btoa(usuario.email)}`)
                     .set( usuario ).then(() => console.log('ok')).catch(e => console.log('Erro: ', e));
             })
-            .catch((error: Error) => {
+            .catch((error: any) => {
                 console.log('Error: ', error);
-                throw error;
+                if (error.code.includes('auth')) {
+                    throw Error('dados-invalidos');
+                }
+                throw Error('servidor-indisponivel');
             });
     }
 
@@ -42,13 +45,16 @@ export class Autenticacao {
             })
             .catch(e => {
                 console.log('Error login: ', e);
-                throw e;
+                throw Error('login-invalid');
             });
     }
 
     public isAutenticated(): boolean {
         if (localStorage.getItem('idToken-app3')) {
             this.tokenId = localStorage.getItem('idToken-app3');
+        }
+        if (this.tokenId === undefined) {
+            this.router.navigate(['/']);
         }
         return this.tokenId ? true : false;
     }

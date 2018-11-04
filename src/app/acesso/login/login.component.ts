@@ -13,9 +13,11 @@ export class LoginComponent implements OnInit {
 
   @Output() public exibirPainel: EventEmitter<string> = new EventEmitter<string>();
 
+  statusLogin = { status: undefined, msg: undefined };
+
   public formulario: FormGroup = new FormGroup({
     'email': new FormControl(null, [ Validators.required, Validators.email ]),
-    'senha': new FormControl(null, [ Validators.required, Validators.minLength(4) ])
+    'senha': new FormControl(null, [ Validators.required, Validators.minLength(6) ])
   });
 
   constructor(
@@ -37,12 +39,17 @@ export class LoginComponent implements OnInit {
         .then(() => this.blockUIService.stop())
         .catch(e => {
           this.blockUIService.stop();
-          console.log(e);
-          alert('Login inválido!');
+          if (e.message === 'login-invalid') {
+            this.statusLogin.msg = `O email ${this.formulario.value.email} inserido não pertence a uma conta. ` +
+              'Verifique seu nome de usuário e senha e tente novamente.';
+            this.statusLogin.status = 'error';
+          }
       });
     } else {
       this.blockUIService.stop();
-      alert('Login inválido!');
+      this.statusLogin.msg = `O email ${this.formulario.value.email} inserido não pertence a uma conta. ` +
+        'Verifique seu nome de usuário e senha e tente novamente.';
+      this.statusLogin.status = 'error';
       return;
     }
   }

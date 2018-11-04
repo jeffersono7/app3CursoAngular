@@ -25,6 +25,8 @@ export class CadastroComponent implements OnInit {
     ])
   });
 
+  statusCadastro = { status: undefined, msg: undefined};
+
   constructor(
     private autenticacao: Autenticacao,
     private blockUIService: BlockUIService
@@ -51,13 +53,17 @@ export class CadastroComponent implements OnInit {
           this.blockUIService.stop();
           this.exibirPainel.emit('login');
         })
-        .catch(e => {
+        .catch((e: Error) => {
           this.blockUIService.stop();
-          alert('Houve um erro! \nTente novamente!');
+          if (e.message === 'dados-invalidos') {
+            this.statusCadastro.msg = 'Dados inválidos! Por favor verifique e tente novamente!';
+          } else {
+            this.statusCadastro.msg = 'Servidor indisponível temporariamente! Tente novamente mais tarde';
+          }
+          this.statusCadastro.status = 'error';
         });
     } else {
       this.blockUIService.stop();
-      alert('Dados inválidos!');
       return;
     }
   }
