@@ -18,6 +18,10 @@ import { HomeComponent } from './home/home.component';
 import { PublicacoesComponent } from './home/publicacoes/publicacoes.component';
 import { BlockUiComponent } from './block-ui/block-ui.component';
 import { BlockUIService } from './block-ui.service';
+import { IncluirPublicacaoComponent } from './home/incluir-publicacao/incluir-publicacao.component';
+
+import { Bd } from './bd.service';
+import { Progresso } from './progresso.service';
 
 @NgModule({
   declarations: [
@@ -28,7 +32,8 @@ import { BlockUIService } from './block-ui.service';
     CadastroComponent,
     HomeComponent,
     PublicacoesComponent,
-    BlockUiComponent
+    BlockUiComponent,
+    IncluirPublicacaoComponent
   ],
   imports: [
     BrowserModule,
@@ -36,7 +41,7 @@ import { BlockUIService } from './block-ui.service';
     ReactiveFormsModule,
     RouterModule.forRoot(ROUTES)
   ],
-  providers: [ Autenticacao, AutenticacaoGuard, BlockUIService ],
+  providers: [ Autenticacao, AutenticacaoGuard, BlockUIService, Bd, Progresso ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
