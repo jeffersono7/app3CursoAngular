@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Bd } from '../../bd.service';
 import * as firebase from 'firebase';
+import { BlockUIService } from '../../block-ui.service';
 
 @Component({
   selector: 'app-publicacoes',
@@ -10,8 +11,9 @@ import * as firebase from 'firebase';
 export class PublicacoesComponent implements OnInit {
 
   email: string;
+  publicacoes: any;
 
-  constructor(private bd: Bd) { }
+  constructor(private bd: Bd, private blockUIService: BlockUIService) { }
 
   ngOnInit() {
     firebase.auth().onAuthStateChanged(user => {
@@ -22,7 +24,13 @@ export class PublicacoesComponent implements OnInit {
   }
 
   public atualizarTimeLine(): void {
-    this.bd.consultarPublicacoes(this.email);
+    this.blockUIService.start();
+    this.bd.consultarPublicacoes(this.email)
+      .then((publicacoes: any) => {
+        // console.log(publicacoes);
+        this.publicacoes = publicacoes;
+        this.blockUIService.stop();
+      });
   }
 
 }

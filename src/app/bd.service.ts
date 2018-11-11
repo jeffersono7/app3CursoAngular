@@ -32,11 +32,49 @@ class Bd {
             });
     }
 
-    public consultarPublicacoes(emailUsuario: string): any {
-        firebase.database().ref(`publicacoes/${btoa(emailUsuario)}`)
-            .once('value')
-            .then((snapshot: any) => {
-                console.log(snapshot.val());
+    public consultarPublicacoes(emailUsuario: string): Promise<any> {
+        // consultar publicações (database)
+        return new Promise((resolve, reject) => {
+            firebase.database().ref(`publicacoes/${btoa(emailUsuario)}`)
+                .orderByKey()
+                .once('value')
+                .then((snapshot: any) => {
+                    // console.log(snapshot.val());
+
+                    const publicacoes: Array<any> = [];
+
+                    snapshot.forEach((childSnapshot: any) => {
+
+                        const publicacao = childSnapshot.val();
+                        publicacao.key = childSnapshot.key;
+
+                        publicacoes.push(publicacao);
+                    });
+                    // console.log(publicacoes);
+                    // resolve(publicacoes);
+                    return publicacoes.reverse();
+                })
+                .then((publicacoes) => {
+                    // console.log(publicacoes);
+                    // consultar a url da imagem (storage)
+                    publicacoes.forEach((publicacao) => {
+
+                        firebase.storage().ref()
+                        .child(`imagens/${publicacao.key}`)
+                        .getDownloadURL()
+                        .then((url: string) => {
+                            publicacao.urlImagem = url;
+
+                            // consultar o nome do usuário
+                            firebase.database().ref(`usuario_detalhe/${btoa(emailUsuario)}`)
+                                .once('value')
+                                .then((snapshot: any) => {
+                                    publicacao.nomeUsuario = snapshot.val().nomeUsuario;
+                                });
+                            });
+                    });
+                    resolve(publicacoes);
+                });
             });
     }
 }
